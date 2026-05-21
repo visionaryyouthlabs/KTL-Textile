@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+import { useEffect } from "react";
 
 import { useState } from "react";
 import { X, Search } from "lucide-react";
@@ -7,24 +9,53 @@ export default function SearchModal({ open, setOpen }) {
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState("all");
 
-  // Dummy data (replace with Sanity later)
-  const products = [
-    { name: "Cotton T-Shirt", price: "$5" },
-    { name: "Hoodie Premium", price: "$12" },
-  ];
+  const [results, setResults] = useState({
+    products: [],
+    blogs: [],
+  });
 
-  const blogs = [
-    { title: "Textile Trends 2026" },
-    { title: "Wholesale Clothing Guide" },
-  ];
+  const [loading, setLoading] = useState(false);
 
-  const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(query.toLowerCase())
-  );
+  // Search logic
+  useEffect(() => {
 
-  const filteredBlogs = blogs.filter(b =>
-    b.title.toLowerCase().includes(query.toLowerCase())
-  );
+    const fetchResults = async () => {
+
+      if (!query.trim()) {
+        setResults({
+          products: [],
+          blogs: [],
+        });
+
+        return;
+      }
+
+      try {
+
+        setLoading(true);
+
+        const res = await fetch(
+          `/api/search?q=${query}`
+        );
+
+        const data = await res.json();
+
+        setResults(data);
+
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const debounce = setTimeout(() => {
+      fetchResults();
+    }, 400);
+
+    return () => clearTimeout(debounce);
+
+  }, [query]);
 
   if (!open) return null;
 
@@ -57,11 +88,10 @@ export default function SearchModal({ open, setOpen }) {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-1 rounded-full border ${
-                tab === t
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-600"
-              }`}
+              className={`px-4 py-1 rounded-full border ${tab === t
+                ? "bg-blue-600 text-white"
+                : "text-gray-600"
+                }`}
             >
               {t.charAt(0).toUpperCase() + t.slice(1)}
             </button>
@@ -70,24 +100,48 @@ export default function SearchModal({ open, setOpen }) {
 
         {/* Results */}
         <div className="max-h-[400px] overflow-y-auto p-4 space-y-6">
-
+          {loading && (
+            <p className="text-sm text-gray-500">
+              Searching...
+            </p>
+          )}
           {/* Products */}
           {(tab === "all" || tab === "products") && (
             <div>
-              <h3 className="font-semibold mb-2">Products</h3>
+              <h3 className="font-semibold mb-2">Products ( {results.products && results.products.length} )</h3>
 
-              {filteredProducts.length === 0 && (
-                <p className="text-gray-400 text-sm">No products found</p>
-              )}
+              {!loading &&
+                results.products.length === 0 && (
+                  <p className="text-gray-400 text-sm">
+                    No products found
+                  </p>
+                )}
 
-              {filteredProducts.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex justify-between py-2 border-b text-sm"
+              {/* Filtering products */}
+              {results.products.map((item) => (
+
+                <Link
+                  key={item._id}
+                  href={`/products/${item.slug.current}`}
+                  onClick={() => setOpen(false)}
+                  className="flex justify-between items-center py-3 border-b border-gray-300 hover:bg-gray-50 px-2 transition"
                 >
-                  <span>{item.name}</span>
-                  <span className="text-blue-600">{item.price}</span>
-                </div>
+
+                  <div>
+
+                    <h4 className="font-medium text-gray-900">
+                      {item.title}
+                    </h4>
+
+                    <p className="text-sm text-gray-500">
+
+                      {item.category?.name}
+
+                    </p>
+
+                  </div>
+
+                </Link>
               ))}
             </div>
           )}
@@ -95,19 +149,29 @@ export default function SearchModal({ open, setOpen }) {
           {/* Blogs */}
           {(tab === "all" || tab === "blogs") && (
             <div>
-              <h3 className="font-semibold mb-2">Blogs</h3>
+              <h3 className="font-semibold mb-2">Blogs ( {results.products && results.products.length} )</h3>
 
-              {filteredBlogs.length === 0 && (
-                <p className="text-gray-400 text-sm">No blogs found</p>
-              )}
+              {!loading &&
+                results.blogs.length === 0 && (
+                  <p className="text-gray-400 text-sm">
+                    No blogs found
+                  </p>
+                )}
 
-              {filteredBlogs.map((item, i) => (
-                <div
-                  key={i}
-                  className="py-2 border-b text-sm"
+              {results.blogs.map((item) => (
+
+                <Link
+                  key={item._id}
+                  href={`/news/${item.slug.current}`}
+                  onClick={() => setOpen(false)}
+                  className="block py-3 border-b border-gray-300 hover:bg-gray-50 px-2 transition"
                 >
-                  {item.title}
-                </div>
+
+                  <h4 className="font-medium text-gray-900">
+                    {item.title}
+                  </h4>
+
+                </Link>
               ))}
             </div>
           )}

@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PortableText } from "@portabletext/react";
 import { CalendarDays, ArrowLeft } from "lucide-react";
 
 import { client, urlFor } from "@/lib/sanity";
 
 import ShareNews from "@/components/News/ShareNews";
+import PortableTextRenderer from "@/components/PortableTextRenderer";
 
 async function getBlog(slug) {
   const query = `
@@ -139,7 +139,7 @@ export default async function SingleNewsPage({ params }) {
 
           <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed">
 
-            <PortableText value={blog.content} />
+            <PortableTextRenderer value={blog.content} />
 
           </div>
 

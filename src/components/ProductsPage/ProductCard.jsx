@@ -1,3 +1,4 @@
+"use client"
 import { PhoneCallIcon } from "lucide-react";
 import Link from "next/link";
 import { FaViber } from "react-icons/fa6";
@@ -39,8 +40,8 @@ export default function ProductCard({ product }) {
 
           <span
             className={`text-xs px-3 py-1 rounded-full ${product.stockStatus === "in-stock"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-600"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-600"
               }`}
           >
             {product.stockStatus}
@@ -48,17 +49,41 @@ export default function ProductCard({ product }) {
 
         </div>
 
-        <div className="mt-2 flex flex-col gap-2 flex-row">
+        <div className="mt-2 flex flex-col md:flex-row gap-2">
 
-          <a href="https://viber://chat?number=95957657567" className="flex items-center text-sm justify-center gap-1 bg-black text-white p-2 rounded-full">
+          {/* Call Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              window.open(
+                "tel:+95957657567",
+                "_self"
+              );
+            }}
+            className="flex items-center text-sm justify-center gap-1 bg-black text-white p-2 rounded-full hover:bg-gray-800 transition"
+          >
             <PhoneCallIcon size={10} />
             Call Now
-          </a>
+          </button>
 
-          <a href="https://viber://chat?number=95957657567" className="flex items-center text-sm justify-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-full">
+          {/* Viber Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              window.open(
+                "https://viber://chat?number=95957657567",
+                "_blank"
+              );
+            }}
+            className="flex items-center text-sm justify-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition"
+          >
             <FaViber size={10} />
             Chat on Viber
-          </a>
+          </button>
 
         </div>
       </div>
