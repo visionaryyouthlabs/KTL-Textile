@@ -66,7 +66,7 @@ export default function SearchModal({ open, setOpen }) {
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-xl overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center border-b px-4 py-3">
+        <div className="flex items-center border-b border-purple-300 px-4 py-3">
           <Search className="text-gray-400 mr-2" size={20} />
 
           <input
@@ -83,13 +83,13 @@ export default function SearchModal({ open, setOpen }) {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-3 px-4 py-3 border-b">
+        <div className="flex gap-3 px-4 py-3 border-b border-purple-300">
           {["all", "products", "blogs"].map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-1 rounded-full border ${tab === t
-                ? "bg-blue-600 text-white"
+              className={`px-4 py-1 rounded-full border border-purple-600 ${tab === t
+                ? "bg-purple-600 text-white"
                 : "text-gray-600"
                 }`}
             >
@@ -124,7 +124,7 @@ export default function SearchModal({ open, setOpen }) {
                   key={item._id}
                   href={`/products/${item.slug.current}`}
                   onClick={() => setOpen(false)}
-                  className="flex justify-between items-center py-3 border-b border-gray-300 hover:bg-gray-50 px-2 transition"
+                  className="flex justify-between items-center py-3 border-b border-purple-300 hover:bg-purple-300 px-2 transition"
                 >
 
                   <div>
@@ -164,7 +164,7 @@ export default function SearchModal({ open, setOpen }) {
                   key={item._id}
                   href={`/news/${item.slug.current}`}
                   onClick={() => setOpen(false)}
-                  className="block py-3 border-b border-gray-300 hover:bg-gray-50 px-2 transition"
+                  className="block py-3 border-b border-purple-300 hover:bg-purple-300 px-2 transition"
                 >
 
                   <h4 className="font-medium text-gray-900">
